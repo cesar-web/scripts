@@ -14,6 +14,15 @@ while true; do
     CPU=$(top -bn1 | grep Cpu | awk '{print $2}')%
     statusbar="$statusbar$(printf "CPU %s | " "$CPU")"
 
+    # Battery
+    BAT=$(acpi | awk '{print $4}' | sed 's/.$//')
+    DIS=$(acpi | awk '{print $3}')
+    if [ "$DIS" != "Discharging," ]; then
+        statusbar="$statusbar$(printf "* %s | " "$BAT")"
+    else
+        statusbar="$statusbar$(printf "%s | " "$BAT")"
+    fi
+
     # Show tasks to be completed if amount > 0
     TASK=$(wc -l ~/documents/todo | awk '{print $1}')
     if [ $TASK -gt 0 ]; then

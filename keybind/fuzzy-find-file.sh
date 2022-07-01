@@ -2,7 +2,7 @@
 
 # Go to home directory and search for files
 cd
-file="$(find * ~/.config/ ~/.bin ~/.zshrc ~/.xinitrc -type f | amenu)"
+file="$(fd -E .cache -E .vim -E .local -E go -H --type f | cut -c 3- | fzf --layout=reverse --info=inline --border --margin=1 --padding=1)"
 
 # Get file extension
 extension=$(echo ${file} | awk -F . '{print $NF}')
@@ -20,24 +20,25 @@ file=$(echo $file | sed 's! !\\ !g')
 # Dont open anything if the user quit
 if [ "$file" != '' ]; then
     case $extension in
-        mp3 ) mpv $file ;;
-        wav ) mpv $file ;;
-        wma ) mpv $file ;;
-        flac) mpv $file ;;
+        mp3 ) devour mpv "$file" ;;
+        wav ) devour mpv "$file" ;;
+        wma ) devour mpv "$file" ;;
+        flac) devour mpv "$file" ;;
 
-        mp4 ) mpv $file ;;
-        mov ) mpv $file ;;
-        wmv ) mpv $file ;;
+        mp4 ) devour mpv "$file" ;;
+        mov ) devour mpv "$file" ;;
+        wmv ) devour mpv "$file" ;;
+        mkv ) devour mpv "$file" ;;
 
-        jpg ) feh --scale-down --auto-zoom $file ;;
-        jpeg) feh --scale-down --auto-zoom $file ;;
-        png ) feh --scale-down --auto-zoom $file ;;
-        gif ) feh --scale-down --auto-zoom $file ;;
-        webp) feh --scale-down --auto-zoom $file ;;
+        jpg ) devour sxiv "$file" ;;
+        jpeg) devour sxiv "$file" ;;
+        png ) devour sxiv "$file" ;;
+        webp) devour sxiv "$file" ;;
+        gif ) devour sxiv -a "$file" ;;
 
-        pdf ) zathura $file ;;
-        epub) zathura $file ;;
+        pdf ) devour zathura "$file" ;;
+        epub) devour zathura "$file" ;;
 
-        *) nvim $file
+        *) nvim "$file"
     esac
 fi
